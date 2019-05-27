@@ -43,6 +43,9 @@ $config = [
             ],
         ],
         'db' => $db,
+        'ekmSummary' => [
+            'class' => 'app\components\EkmSummaryApi'
+        ]
         /*
         'urlManager' => [
             'enablePrettyUrl' => true,
