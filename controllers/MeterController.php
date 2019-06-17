@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\EkmSummaryApi;
 use Yii;
 use app\models\Meter;
 use app\models\MeterSearch;
@@ -52,8 +53,17 @@ class MeterController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        Yii::$app->ekmSummary->setReport(EkmSummaryApi::REPORT_HOUR);
+        Yii::$app->ekmSummary->setMeters($model->id);
+        $data = Yii::$app->ekmSummary->getData();
+        $groupError = false;
+        if (isset($data->error_code)) {
+            $groupError = true;
+        }
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'groupError' => $groupError
         ]);
     }
 

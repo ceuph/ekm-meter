@@ -32,6 +32,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'name',
             'description',
+            'group_api:html' => [
+                'label' => 'Group API',
+                'value' => $groupError ? 'Failed' : 'Success'
+            ]
         ],
     ]) ?>
 

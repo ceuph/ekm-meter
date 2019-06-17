@@ -61,11 +61,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        Yii::$app->ekmSummary->setMeters('28158');
-        Yii::$app->ekmSummary->setStartDate(new \DateTime('2019-04-29 00:00:00'));
-        Yii::$app->ekmSummary->setEndDate(new \DateTime('2019-05-27 23:59:59'));
-        $data = Yii::$app->ekmSummary->getData();
-        return $this->render('index', ['data' => $data]);
+        return $this->render('index');
     }
 
     /**

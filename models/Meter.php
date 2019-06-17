@@ -14,6 +14,7 @@ use Yii;
  * @property GroupMeter[] $groupMeters
  * @property Groups[] $groups
  * @property MeterData[] $meterDatas
+ * @property MeterSummary[] $meterSummaries
  */
 class Meter extends \yii\db\ActiveRecord
 {
@@ -73,5 +74,13 @@ class Meter extends \yii\db\ActiveRecord
     public function getMeterDatas()
     {
         return $this->hasMany(MeterData::className(), ['meter_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMeterSummaries()
+    {
+        return $this->hasMany(MeterSummary::className(), ['meter_id' => 'id']);
     }
 }

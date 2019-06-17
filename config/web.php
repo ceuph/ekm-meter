@@ -43,6 +43,9 @@ $config = [
             ],
         ],
         'db' => $db,
+        'ekm' => [
+            'class' => 'app\components\EkmApi'
+        ],
         'ekmSummary' => [
             'class' => 'app\components\EkmSummaryApi'
         ]

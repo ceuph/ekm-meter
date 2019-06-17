@@ -5,7 +5,7 @@ use yii\base\Component;
 
 class EkmSummaryApi extends Component
 {
-    const URL = 'https://summary.ekmmetering.com/summary';
+    const URL = 'http://summary.ekmmetering.com/summary';
 
     const PARAM_KEY = 'key';
     const PARAM_METERS = 'meters';
@@ -139,6 +139,7 @@ class EkmSummaryApi extends Component
 
     public function setStartDate(\DateTime $startDate)
     {
+        $startDate->setTimezone(new \DateTimeZone(preg_replace('/~/', '/', $this->getTimezone())));
         $this->_startDate = $startDate;
         return $this;
     }
@@ -153,6 +154,7 @@ class EkmSummaryApi extends Component
 
     public function setEndDate(\DateTime $endDate)
     {
+        $endDate->setTimezone(new \DateTimeZone(preg_replace('/~/', '/', $this->getTimezone())));
         $this->_endDate = $endDate;
         return $this;
     }
@@ -170,7 +172,7 @@ class EkmSummaryApi extends Component
 
     public function getQuery()
     {
-        return http_build_query([
+        $params = [
             EkmSummaryApi::PARAM_KEY => $this->getKey(),
             EkmSummaryApi::PARAM_METERS => $this->getMeters(),
             EkmSummaryApi::PARAM_REPORT => $this->getReport(),
@@ -178,18 +180,35 @@ class EkmSummaryApi extends Component
             EkmSummaryApi::PARAM_LIMIT => $this->getLimit(),
             EkmSummaryApi::PARAM_OFFSET => $this->getOffset(),
             EkmSummaryApi::PARAM_TIMEZONE => $this->getTimezone(),
-            EkmSummaryApi::PARAM_START_DATE => $this->getStartDate()->format(EkmSummaryApi::DATE_FORMAT),
-            EkmSummaryApi::PARAM_END_DATE => $this->getEndDate(EkmSummaryApi::DATE_FORMAT),
-            EkmSummaryApi::PARAM_NORMALIZE => $this->getNormalize(),
-        ]);
+            EkmSummaryApi::PARAM_NORMALIZE => $this->getNormalize()
+        ];
+
+        if (null !== $this->getStartDate()) {
+            $params[EkmSummaryApi::PARAM_START_DATE] = $this->getStartDate()->format(EkmSummaryApi::DATE_FORMAT);
+        }
+
+        if (null !== $this->getEndDate()) {
+            $params[EkmSummaryApi::PARAM_END_DATE] = $this->getEndDate()->format(EkmSummaryApi::DATE_FORMAT);
+        }
+
+        return http_build_query($params);
+    }
+
+    public function getUrl()
+    {
+        return EkmSummaryApi::URL . '?' . $this->getQuery();
     }
 
     public function getData()
     {
         $ch = curl_init();
-        curl_setopt($ch,    CURLOPT_URL, EkmSummaryApi::URL . '?' . $this->getQuery());
+        curl_setopt($ch,    CURLOPT_URL, $this->getUrl());
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $content = curl_exec($ch);
+
+        if (false === $content) {
+            throw new \Exception(curl_error($ch), curl_errno($ch));
+        }
 
         switch ($this->getFormat())
         {
@@ -202,5 +221,6 @@ class EkmSummaryApi extends Component
             case EkmSummaryApi::FORMAT_CSV:
                 return str_getcsv($content);
         }
+        return $content;
     }
 }
