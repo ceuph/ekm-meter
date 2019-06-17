@@ -3,8 +3,8 @@
 return [
     'class' => 'yii\db\Connection',
     'dsn' => 'mysql:host=localhost;dbname=ekmmeter',
-    'username' => 'root',
-    'password' => '',
+    'username' => 'ekmmeter',
+    'password' => '3km.m3t3r',
     'charset' => 'utf8',
 
     // Schema cache options (for production environment)
