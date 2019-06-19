@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\models\Groups;
+use app\models\Meter;
 use Yii;
 use app\models\GroupMeter;
 use app\models\GroupMeterSearch;
@@ -63,16 +65,22 @@ class GroupMeterController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($id)
     {
+        $groups = $this->findGroup($id);
+        $meters = Meter::find()->all();
+
         $model = new GroupMeter();
+        $model->group_id = $groups->id;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'meter_id' => $model->meter_id, 'group_id' => $model->group_id]);
+            return $this->redirect(['groups/view', 'id' => $model->group_id]);
         }
 
         return $this->render('create', [
             'model' => $model,
+            'groups' => $groups,
+            'meters' => $meters
         ]);
     }
 
@@ -127,5 +135,15 @@ class GroupMeterController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    protected function findGroup($group_id)
+    {
+        $groups = Groups::findOne($group_id);
+        if (null === $groups) {
+            throw new NotFoundHttpException('The group id #' . $group_id . ' does not exist.');
+        }
+
+        return $groups;
     }
 }

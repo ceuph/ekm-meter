@@ -24,7 +24,7 @@ use yii\console\ExitCode;
 class EkmController extends Controller
 {
     public $endDate;
-    public $limit = 500;
+    public $limit = 10;
     public $loop = true;
     public $type = EkmSummaryApi::REPORT_DAY;
 

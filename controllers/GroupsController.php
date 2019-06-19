@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\models\GroupMeter;
+use app\models\GroupMeterSearch;
 use Yii;
 use app\models\Groups;
 use app\models\GroupsSearch;
@@ -52,8 +54,14 @@ class GroupsController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        $searchModel = new GroupMeterSearch(['group_id' => $model->id]);
+        $dataProvider = $searchModel->search([]);
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider
         ]);
     }
 

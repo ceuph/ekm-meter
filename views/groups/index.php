@@ -24,13 +24,29 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'name',
+            [
+                'attribute' => 'name',
+                'format' => 'html',
+                'label' => 'Name',
+                'value' => function($model, $key, $index, $column) {
+                    return Html::a($model->name, ['groups/view', 'id' => $model->id]);
+                }
+            ],
             'description',
-
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'format' => 'html',
+                'label' => 'Members',
+                'value' => function($model) {
+                    $value = '';
+                    foreach ($model->meters as $meter) {
+                        if (strlen($value) > 0) {
+                            $value .= '&nbsp;&nbsp;|&nbsp;&nbsp;';
+                        }
+                        $value .= Html::a($meter->name, ['meter/view', 'id' => $meter->id]);
+                    }
+                    return $value;
+                }
+            ],
         ],
     ]); ?>
 

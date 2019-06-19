@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use yii\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Groups */
@@ -26,6 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ]) ?>
     </p>
 
+    <!-- Display Group Info -->
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
@@ -35,4 +37,16 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
+    <!-- Display Group Members -->
+    <h2>Group Members</h2>
+    <p>
+        <?= Html::a('Add Member', ['group-meter/create', 'id' => $model->id], ['class' => 'btn btn-info']) ?>
+    </p>
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'columns' => [
+            'meter_id',
+            'meter.name'
+        ],
+    ]); ?>
 </div>
