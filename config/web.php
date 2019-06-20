@@ -59,6 +59,7 @@ $config = [
         */
     ],
     'params' => $params,
+    'timeZone' => 'Asia/Manila'
 ];
 
 if (YII_ENV_DEV) {

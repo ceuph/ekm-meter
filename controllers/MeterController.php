@@ -36,9 +36,9 @@ class MeterController extends Controller
      */
     public function actionIndex()
     {
+        $queryParams = Yii::$app->request->queryParams;
         $searchModel = new MeterSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+        $dataProvider = $searchModel->search($queryParams);
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,

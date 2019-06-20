@@ -34,6 +34,7 @@ $config = [
         ]
     ],
     'params' => $params,
+    'timeZone' => 'Asia/Manila'
     /*
     'controllerMap' => [
         'fixture' => [ // Fixture generation command line.

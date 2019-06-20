@@ -46,6 +46,7 @@ class MeterSearch extends Meter
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => ['defaultOrder' => 'name asc']
         ]);
 
         $this->load($params);
