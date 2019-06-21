@@ -62,8 +62,10 @@ use Yii;
  * @property double $RMS_Watts_Ln_3_StdDev
  * @property double $RMS_Watts_Ln_3_Min
  * @property double $RMS_Watts_Ln_3_Max
- * @property string $start_date
- * @property string $end_date
+ * @property int $year
+ * @property int $month
+ * @property int $day
+ * @property int $hour
  *
  * @property Meter $meter
  */
@@ -84,9 +86,8 @@ class MeterSummary extends \yii\db\ActiveRecord
     {
         return [
             [['meter_id', 'report', 'start_timestamp', 'end_timestamp', 'kWh_Tot_Min', 'kWh_Tot_Max', 'kWh_Tot_Diff', 'kWh_Tariff_1_Min', 'kWh_Tariff_1_Max', 'kWh_Tariff_1_Diff', 'kWh_Tariff_2_Min', 'kWh_Tariff_2_Max', 'kWh_Tariff_2_Diff', 'kWh_Tariff_3_Min', 'kWh_Tariff_3_Max', 'kWh_Tariff_3_Diff', 'kWh_Tariff_4_Min', 'kWh_Tariff_4_Max', 'kWh_Tariff_4_Diff', 'RMS_Volts_Ln_1_Average', 'RMS_Volts_Ln_1_StdDev', 'RMS_Volts_Ln_1_Min', 'RMS_Volts_Ln_1_Max', 'RMS_Volts_Ln_2_Average', 'RMS_Volts_Ln_2_StdDev', 'RMS_Volts_Ln_2_Min', 'RMS_Volts_Ln_2_Max', 'RMS_Volts_Ln_3_Average', 'RMS_Volts_Ln_3_StdDev', 'RMS_Volts_Ln_3_Min', 'RMS_Volts_Ln_3_Max', 'Amps_Ln_1_Average', 'Amps_Ln_1_StdDev', 'Amps_Ln_1_Min', 'Amps_Ln_1_Max', 'Amps_Ln_2_Average', 'Amps_Ln_2_StdDev', 'Amps_Ln_2_Min', 'Amps_Ln_2_Max', 'Amps_Ln_3_Average', 'Amps_Ln_3_StdDev', 'Amps_Ln_3_Min', 'Amps_Ln_3_Max', 'RMS_Watts_Ln_1_Average', 'RMS_Watts_Ln_1_StdDev', 'RMS_Watts_Ln_1_Min', 'RMS_Watts_Ln_1_Max', 'RMS_Watts_Ln_2_Average', 'RMS_Watts_Ln_2_StdDev', 'RMS_Watts_Ln_2_Min', 'RMS_Watts_Ln_2_Max', 'RMS_Watts_Ln_3_Average', 'RMS_Watts_Ln_3_StdDev', 'RMS_Watts_Ln_3_Min', 'RMS_Watts_Ln_3_Max'], 'required'],
-            [['meter_id', 'start_timestamp', 'end_timestamp'], 'integer'],
+            [['meter_id', 'start_timestamp', 'end_timestamp', 'year', 'month', 'day', 'hour'], 'integer'],
             [['kWh_Tot_Min', 'kWh_Tot_Max', 'kWh_Tot_Diff', 'kWh_Tariff_1_Min', 'kWh_Tariff_1_Max', 'kWh_Tariff_1_Diff', 'kWh_Tariff_2_Min', 'kWh_Tariff_2_Max', 'kWh_Tariff_2_Diff', 'kWh_Tariff_3_Min', 'kWh_Tariff_3_Max', 'kWh_Tariff_3_Diff', 'kWh_Tariff_4_Min', 'kWh_Tariff_4_Max', 'kWh_Tariff_4_Diff', 'RMS_Volts_Ln_1_Average', 'RMS_Volts_Ln_1_StdDev', 'RMS_Volts_Ln_1_Min', 'RMS_Volts_Ln_1_Max', 'RMS_Volts_Ln_2_Average', 'RMS_Volts_Ln_2_StdDev', 'RMS_Volts_Ln_2_Min', 'RMS_Volts_Ln_2_Max', 'RMS_Volts_Ln_3_Average', 'RMS_Volts_Ln_3_StdDev', 'RMS_Volts_Ln_3_Min', 'RMS_Volts_Ln_3_Max', 'Amps_Ln_1_Average', 'Amps_Ln_1_StdDev', 'Amps_Ln_1_Min', 'Amps_Ln_1_Max', 'Amps_Ln_2_Average', 'Amps_Ln_2_StdDev', 'Amps_Ln_2_Min', 'Amps_Ln_2_Max', 'Amps_Ln_3_Average', 'Amps_Ln_3_StdDev', 'Amps_Ln_3_Min', 'Amps_Ln_3_Max', 'RMS_Watts_Ln_1_Average', 'RMS_Watts_Ln_1_StdDev', 'RMS_Watts_Ln_1_Min', 'RMS_Watts_Ln_1_Max', 'RMS_Watts_Ln_2_Average', 'RMS_Watts_Ln_2_StdDev', 'RMS_Watts_Ln_2_Min', 'RMS_Watts_Ln_2_Max', 'RMS_Watts_Ln_3_Average', 'RMS_Watts_Ln_3_StdDev', 'RMS_Watts_Ln_3_Min', 'RMS_Watts_Ln_3_Max'], 'number'],
-            [['start_date', 'end_date'], 'safe'],
             [['report'], 'string', 'max' => 2],
             [['meter_id', 'report', 'start_timestamp'], 'unique', 'targetAttribute' => ['meter_id', 'report', 'start_timestamp']],
             [['meter_id'], 'exist', 'skipOnError' => true, 'targetClass' => Meter::className(), 'targetAttribute' => ['meter_id' => 'id']],
@@ -154,8 +155,10 @@ class MeterSummary extends \yii\db\ActiveRecord
             'RMS_Watts_Ln_3_StdDev' => 'Rms Watts Ln 3 Std Dev',
             'RMS_Watts_Ln_3_Min' => 'Rms Watts Ln 3 Min',
             'RMS_Watts_Ln_3_Max' => 'Rms Watts Ln 3 Max',
-            'start_date' => 'Start Date',
-            'end_date' => 'End Date',
+            'year' => 'Year',
+            'month' => 'Month',
+            'day' => 'Day',
+            'hour' => 'Hour',
         ];
     }
 
