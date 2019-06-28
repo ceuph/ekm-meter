@@ -115,8 +115,10 @@ class MeterSummarySearch extends MeterSummary
             'RMS_Watts_Ln_3_StdDev' => $this->RMS_Watts_Ln_3_StdDev,
             'RMS_Watts_Ln_3_Min' => $this->RMS_Watts_Ln_3_Min,
             'RMS_Watts_Ln_3_Max' => $this->RMS_Watts_Ln_3_Max,
-            'start_date' => $this->start_date,
-            'end_date' => $this->end_date,
+            'year' => $this->year,
+            'month' => $this->month,
+            'day' => $this->day,
+            'hour' => $this->hour
         ]);
 
         $query->andFilterWhere(['like', 'report', $this->report]);
