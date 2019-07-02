@@ -17,6 +17,7 @@ class ReportController extends Controller
 {
     const GRANULARITY_METER = 'meter';
     const GRANULARITY_GROUP = 'groups';
+    public $queryCount = 0;
 
     public static function getHtmlClass($data, $value, $min, $max)
     {
@@ -58,9 +59,9 @@ class ReportController extends Controller
         if ($post = \Yii::$app->request->post()) {
             foreach ($post['id'] as $i => $value) {
                 $result = $this->getQueryByGranularity(self::GRANULARITY_GROUP, $post, $i)->all();
-                $this->processResultsToData($post['type'], $post['data'], $post['color'], $result, $data);
+                $this->processResultsToData($post['type'], $post['data'], $post['color'], $result, $data, 'yes' == $post['shift']);
             }
-            $this->postProcessData($data);
+            $this->postProcessData($data, 'yes' == $post['shift']);
         }
         return $this->render('groups',[
             'dropDownItems' => $dropDownItems,
@@ -68,23 +69,28 @@ class ReportController extends Controller
         ]);
     }
 
-    public function postProcessData(&$data) {
+    public function postProcessData(&$data, $shift = true) {
         ksort($data['labels']);
         $data['rows'] = [
             'labels' => [],
             'data' => [],
         ];
-        $data['min'] = 0;
+        $data['min'] = null;
         $data['max'] = 0;
         foreach ($data['labels'] as $index => $label) {
             foreach ($data['data'] as $name => $value) {
-                if (!isset($data['data'][$name][$index])) {
+                if ($shift && !isset($data['data'][$name][$index])) {
                     $data['data'][$name][$index] = 0;
                 }
                 $data['rows']['labels'][$name] = $name;
-                $data['rows']['data'][$index][$name] = $data['data'][$name][$index];
-                $data['min'] = $data['min'] > $data['data'][$name][$index] ? $data['data'][$name][$index] : $data['min'];
-                $data['max'] = $data['max'] < $data['data'][$name][$index] ? $data['data'][$name][$index] : $data['max'];
+                $data['rows']['data'][$index][$name] = isset($data['data'][$name][$index]) ? $data['data'][$name][$index] : 0;
+                if (isset($data['data'][$name][$index])) {
+                    if (null === $data['min']) {
+                        $data['min'] = $data['data'][$name][$index];
+                    }
+                    $data['min'] = $data['min'] > $data['data'][$name][$index] ? $data['data'][$name][$index] : $data['min'];
+                    $data['max'] = $data['max'] < $data['data'][$name][$index] ? $data['data'][$name][$index] : $data['max'];
+                }
             }
         }
         foreach ($data['data'] as $name => $value) {
@@ -92,7 +98,7 @@ class ReportController extends Controller
         }
     }
 
-    public function processResultsToData($type, $dataType, $colors, $result, &$data)
+    public function processResultsToData($type, $dataType, $colors, $result, &$data, $shift = true)
     {
         $format = $this->getFormatFromType($type);
         if (empty($data)) {
@@ -100,13 +106,20 @@ class ReportController extends Controller
             $data['data'] = [];
             $data['colors'] = $colors;
         }
-        foreach ($result as $row) {
-            $name = array_shift($row);
+        foreach ($result as $i => $row) {
+            $index = $i;
+            $label = $i;
+            $name = array_shift($row) . (!$shift ? $this->queryCount : null);
             $startTime = array_shift($row);
             $endTime = array_shift($row);
-            $data['labels'][date($format['index'], $startTime)] = date($format['from'], $startTime) . date($format['to'], $endTime);
-            $data['data'][$name][date($format['index'], $startTime)] = $this->getValueFromDataType($row, $dataType);
+            if ($shift) {
+                $index = date($format['index'], $startTime);
+                $label = date($format['from'], $startTime) . date($format['to'], $endTime);
+            }
+            $data['labels'][$index] = $label;
+            $data['data'][$name][$index] = $this->getValueFromDataType($row, $dataType);
         }
+        $this->queryCount++;
     }
 
     public function getValueFromDataType(&$row, $dataType)
@@ -139,8 +152,8 @@ class ReportController extends Controller
             case 'dy':
                 return [
                     'index' => 'Y-m-d',
-                    'from' => 'M d',
-                    'to' => '-M d, Y'
+                    'from' => 'M d,',
+                    'to' => ' Y'
                 ];
             case 'wk':
                 return [

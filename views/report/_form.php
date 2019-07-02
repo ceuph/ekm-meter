@@ -25,6 +25,13 @@ $x = 0;
                 <option value="amp"<?= isset($post['data']) && $post['data'] == 'amp' ? ' selected="selected"' : null ?>>Average Amperes</option>
             </select>
         </div>
+        <div class="form-group col-lg-2">
+            <label for="shift">Shift Dates</label>
+            <select id="shift" name="shift" class="form-control">
+                <option value="yes"<?= isset($post['shift']) && $post['shift'] == 'yes' ? ' selected="selected"' : null ?>>Yes</option>
+                <option value="no"<?= isset($post['shift']) && $post['shift'] == 'no' ? ' selected="selected"' : null ?>>No</option>
+            </select>
+        </div>
     </div>
     <table class="table">
         <thead>
