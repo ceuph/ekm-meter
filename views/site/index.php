@@ -2,52 +2,45 @@
 
 /* @var $this yii\web\View */
 
-$this->title = 'My Yii Application';
+$this->title = 'CEU HAU DareTo Project';
 ?>
 <div class="site-index">
 
     <div class="jumbotron">
-        <h1>Congratulations!</h1>
+        <p class="lead">Carbon Footprint for the Month of <?= date('F') ?></p>
+        <h1><?= number_format($total * $emissionFactor->value, 2) ?> KgCO<sub>2</sub></h1>
 
-        <p class="lead">You have successfully created your Yii-powered application.</p>
-
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
+        <p class="lead">TOTAL CARBON FOOTPRINT</p>
     </div>
 
     <div class="body-content">
 
         <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
+            <?php foreach ($results as $result) : ?>
+                <div class="col-lg-4 text-center jumbotron">
+                    <h1><?= number_format($result['sum_diff'] * $emissionFactor->value, 2) ?></h1>
+                    <h2><?= strtoupper($result['name']) ?></h2>
+                    <p>KgCO<sub>2</sub></p>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <p>
+                    <var>KgCo<sub>2</sub></var> = <var>KWh</var> * <var>t-CO<sub>2</sub>/MWh</var> <sup>[1]</sup>
+                </p>
+                <p>
+                    <var>t-CO<sub>2</sub>/MWh</var> = <?= $emissionFactor->value ?> <sup>[2]</sup>
+                </p>
             </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
+            <div class="col-lg-12">
+                <p>
+                    [1] - <a href="https://www.rappler.com/brandrap/161573-household-carbon-emission-computation">https://www.rappler.com/brandrap/161573-household-carbon-emission-computation</a>
+                </p>
+                <p>
+                    [2] - <a href="https://www.doe.gov.ph/electric-power/2015-2017-national-grid-emission-factor-ngef">https://www.doe.gov.ph/electric-power/2015-2017-national-grid-emission-factor-ngef</a>
+                </p>
             </div>
         </div>
-
     </div>
 </div>

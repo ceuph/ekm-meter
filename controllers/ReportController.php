@@ -10,6 +10,7 @@ namespace app\controllers;
 
 
 use app\models\GroupsSearch;
+use app\models\MeterSearch;
 use yii\db\Query;
 use yii\web\Controller;
 
@@ -49,22 +50,37 @@ class ReportController extends Controller
 
     public function actionMeter()
     {
-
+        return $this->renderReport(self::GRANULARITY_METER);
     }
 
     public function actionGroups()
     {
-        $dropDownItems = GroupsSearch::find()->all();
-        $data = [];
-        if ($post = \Yii::$app->request->post()) {
-            foreach ($post['id'] as $i => $value) {
-                $result = $this->getQueryByGranularity(self::GRANULARITY_GROUP, $post, $i)->all();
-                $this->processResultsToData($post['type'], $post['data'], $post['color'], $result, $data, 'yes' == $post['shift']);
-            }
-            $this->postProcessData($data, 'yes' == $post['shift']);
+        return $this->renderReport(self::GRANULARITY_GROUP);
+    }
+
+    public function renderReport($granularity)
+    {
+        $dropDownItems = [];
+        switch ($granularity) {
+            case self::GRANULARITY_METER:
+                $dropDownItems = MeterSearch::find()->orderBy('name')->all();
+                break;
+            case self::GRANULARITY_GROUP:
+                $dropDownItems = GroupsSearch::find()->orderBy('name')->all();
+                break;
         }
-        return $this->render('groups',[
+        $data = [];
+        if (\Yii::$app->request->get('id')) {
+            $get = \Yii::$app->request->get();
+            foreach ($get['id'] as $i => $value) {
+                $result = $this->getQueryByGranularity($granularity, $get, $i)->all();
+                $this->processResultsToData($get['type'], $get['data'], $get['color'], $result, $data, 'yes' == $get['shift']);
+            }
+            $this->postProcessData($data, 'yes' == $get['shift']);
+        }
+        return $this->render('report',[
             'dropDownItems' => $dropDownItems,
+            'granularity' => $granularity,
             'data' => $data
         ]);
     }
@@ -170,19 +186,19 @@ class ReportController extends Controller
         }
     }
 
-    public function getQueryByGranularity($granularity, $post, $i)
+    public function getQueryByGranularity($granularity, $params, $i)
     {
         $query = new Query();
         $query
-            ->select($this->getColumnsByDataType($granularity, $post['data']))
+            ->select($this->getColumnsByDataType($granularity, $params['data']))
             ->from($granularity)
             ->where($granularity . '.id = :id AND start_timestamp >= :min AND start_timestamp <= :max AND report = :report', [
-                ':id' => $post['id'][$i],
-                ':min' => strtotime($post['min_time'][$i].':00+08:00'),
-                ':max' => strtotime($post['max_time'][$i].':59+08:00'),
-                ':report' => $post['type']
+                ':id' => $params['id'][$i],
+                ':min' => strtotime($params['min_time'][$i].':00+08:00'),
+                ':max' => strtotime($params['max_time'][$i].':59+08:00'),
+                ':report' => $params['type']
             ])
-            ->groupBy($this->getGroupByType($post['type']))
+            ->groupBy($this->getGroupByType($params['type']))
             ->orderBy('start_timestamp')
         ;
         if (self::GRANULARITY_GROUP === $granularity) {
