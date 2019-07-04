@@ -11,6 +11,26 @@ use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 
 AppAsset::register($this);
+$items = [
+    ['label' => 'Home', 'url' => ['/site/index']]
+];
+
+if (Yii::$app->user->isGuest) {
+    $items[] = ['label' => 'Login', 'url' => ['/site/login']];
+} else {
+    $items[] = ['label' => 'Meters', 'url' => ['/meter/index']];
+    $items[] = ['label' => 'Groups', 'url' => ['/groups/index']];
+    $items[] = ['label' => 'Reports', 'url' => ['/report/index']];
+    $items[] = '<li>'
+        . Html::beginForm(['/site/logout'], 'post')
+        . Html::submitButton(
+            'Logout (' . Yii::$app->user->identity->username . ')',
+            ['class' => 'btn btn-link logout']
+        )
+        . Html::endForm()
+        . '</li>'
+    ;
+}
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -37,24 +57,7 @@ AppAsset::register($this);
     ]);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'Meters', 'url' => ['/meter/index']],
-            ['label' => 'Groups', 'url' => ['/groups/index']],
-            ['label' => 'Reports', 'url' => ['/report/index']],
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
-            ) : (
-                '<li>'
-                . Html::beginForm(['/site/logout'], 'post')
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>'
-            )
-        ],
+        'items' => $items,
     ]);
     NavBar::end();
     ?>

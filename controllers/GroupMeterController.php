@@ -7,6 +7,7 @@ use app\models\Meter;
 use Yii;
 use app\models\GroupMeter;
 use app\models\GroupMeterSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -28,6 +29,12 @@ class GroupMeterController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    ['allow' => true, 'roles' => ['@']]
+                ]
+            ]
         ];
     }
 

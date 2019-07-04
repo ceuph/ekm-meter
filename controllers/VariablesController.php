@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use app\models\Variables;
 use app\models\VariablesSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -26,6 +27,12 @@ class VariablesController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    ['allow' => true, 'roles' => ['@']]
+                ]
+            ]
         ];
     }
 

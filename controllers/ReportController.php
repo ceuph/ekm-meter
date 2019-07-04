@@ -13,6 +13,7 @@ use app\models\GroupsSearch;
 use app\models\MeterSearch;
 use app\models\Variables;
 use yii\db\Query;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
 
@@ -22,6 +23,18 @@ class ReportController extends Controller
     const GRANULARITY_GROUP = 'groups';
     public $queryCount = 0;
     private $emissionFactor = null;
+
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    ['allow' => true, 'roles' => ['@']]
+                ]
+            ]
+        ];
+    }
 
     public static function getHtmlClass($data, $value, $min, $max)
     {
@@ -110,7 +123,7 @@ class ReportController extends Controller
                 fputcsv($csv, array_merge([$label], $row));
             }
             fclose($csv);
-            return;
+            exit;
         }
         return $this->render('report',[
             'dropDownItems' => $dropDownItems,
