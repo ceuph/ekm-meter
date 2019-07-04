@@ -13,9 +13,24 @@ use app\controllers\ReportController;
                 <?php foreach ($data['labels'] as $index => $label) : ?>
                     <tr>
                         <td><?= $label ?></td>
-                        <?php foreach ($data['rows']['data'][$index] as $value) : ?>
-                            <td class="<?= ReportController::getHtmlClass($data['rows']['data'][$index], $value, $data['min'], $data['max']) ?>">
-                                <?= number_format($value, 4) ?>
+                        <?php foreach ($data['rows']['data'][$index] as $item) : ?>
+                            <td class="<?= ReportController::getHtmlClass($data['rows']['data'][$index], $item['value'], $data['min'], $data['max']) ?>">
+                                <?= number_format($item['value'], 4) ?>
+                                <?php switch (Yii::$app->request->get('data')) {
+                                    case 'diff':
+                                    case 'avg':
+                                        echo 'KWh';
+                                        break;
+                                    case 'co2':
+                                        echo 'KgCO<sub>2</sub>';
+                                        break;
+                                    default:
+                                        echo Yii::$app->request->get('data') . 's';
+                                        break;
+
+                                }
+                                echo 'no' == Yii::$app->request->get('shift') ? '<br />' . $item['label'] : null;
+                                ?>
                             </td>
                         <?php endforeach; ?>
                     </tr>

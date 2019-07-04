@@ -21,7 +21,8 @@ $x = 0;
         <div class="form-group col-lg-3">
             <label for="data">Data Type</label>
             <select id="data" name="data" class="form-control">
-                <option value="diff"<?= isset($get['data']) && $get['data'] == 'diff' ? ' selected="selected"' : null ?>>KW/H Total</option>
+                <option value="diff"<?= isset($get['data']) && $get['data'] == 'diff' ? ' selected="selected"' : null ?>>Total KWh Difference</option>
+                <option value="co2"<?= isset($get['data']) && $get['data'] == 'co2' ? ' selected="selected"' : null ?>>Total KgCO<sub>2</sub></option>
                 <option value="avg"<?= isset($get['data']) && $get['data'] == 'avg' ? ' selected="selected"' : null ?>>Average Watts</option>
                 <option value="volt"<?= isset($get['data']) && $get['data'] == 'volt' ? ' selected="selected"' : null ?>>Average Volts</option>
                 <option value="amp"<?= isset($get['data']) && $get['data'] == 'amp' ? ' selected="selected"' : null ?>>Average Amperes</option>

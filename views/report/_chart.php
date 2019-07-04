@@ -8,7 +8,7 @@ $dataSet = [];
 foreach ($data['data'] as $name => $value) {
     $nokey = [];
     foreach ($value as $item) {
-        $nokey[] = $item;
+        $nokey[] = $item['value'];
     }
     $color = array_shift($data['colors']);
     $dataSet[] = [
