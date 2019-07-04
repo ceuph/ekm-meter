@@ -76,17 +76,18 @@ $x = 0;
         <?php endfor; ?>
         </tbody>
         <tfoot>
-        <tr>
-            <td>
-                <a id="add_row" href="#" class="btn btn-default">Add Row</a>
-                <input type="submit" name="submit" value="Create Report" class="btn btn-primary" />
-            </td>
-        </tr>
         </tfoot>
     </table>
+    <div class="row">
+        <div class="col-lg-12">
+            <a id="add_row" href="#" class="btn btn-default">Add Row</a>
+            <input type="submit" name="submit" value="Create Report" class="btn btn-primary" />
+            <input type="submit" name="submit" value="Download Data" class="btn btn-primary" />
+        </div>
+    </div>
 <?= Html::endForm() ?>
 <script type="text/javascript">
-    var x = <?= $x ?>;
+    var x = <?= $x + 1 ?>;
     function add_row()
     {
         var fields = '<td class="form-group col-lg-3">' +

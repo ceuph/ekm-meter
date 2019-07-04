@@ -14,6 +14,7 @@ use app\models\MeterSearch;
 use app\models\Variables;
 use yii\db\Query;
 use yii\web\Controller;
+use yii\web\Response;
 
 class ReportController extends Controller
 {
@@ -82,6 +83,34 @@ class ReportController extends Controller
                 $this->processResultsToData($get['type'], $get['data'], $get['color'], $result, $data, 'yes' == $get['shift']);
             }
             $this->postProcessData($data, 'yes' == $get['shift']);
+        }
+        if (strtoupper(\Yii::$app->request->get('submit')) == 'DOWNLOAD DATA') {
+            header("Content-type: text/csv");
+            header("Content-Disposition: attachment; filename=" . uniqid() . ".csv");
+            header("Pragma: no-cache");
+            header("Expires: 0");
+            $csv = fopen("php://output", "w");
+            $labels = ['yes' == $get['shift'] ? 'Date/Time' : '#'];
+            foreach ($data['rows']['labels'] as $label) {
+                if ('no' == $get['shift']) {
+                    $labels[] = 'Date/Time';
+                }
+                $labels[] = $label;
+            }
+            fputcsv($csv, $labels);
+
+            foreach ($data['labels'] as $index => $label) {
+                $row = [];
+                foreach ($data['rows']['data'][$index] as $item) {
+                    if ('no' == $get['shift']) {
+                        $row[] = $item['label'];
+                    }
+                    $row[] = $item['value'];
+                }
+                fputcsv($csv, array_merge([$label], $row));
+            }
+            fclose($csv);
+            return;
         }
         return $this->render('report',[
             'dropDownItems' => $dropDownItems,
