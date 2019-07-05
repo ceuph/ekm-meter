@@ -16,19 +16,15 @@ $items = [
 ];
 
 if (Yii::$app->user->isGuest) {
-    $items[] = ['label' => 'Login', 'url' => ['/site/login']];
+    $items[] = ['label' => 'Sign in', 'url' => ['/user/security/login']];
 } else {
     $items[] = ['label' => 'Meters', 'url' => ['/meter/index']];
     $items[] = ['label' => 'Groups', 'url' => ['/groups/index']];
     $items[] = ['label' => 'Reports', 'url' => ['/report/index']];
-    $items[] = '<li>'
-        . Html::beginForm(['/site/logout'], 'post')
-        . Html::submitButton(
-            'Logout (' . Yii::$app->user->identity->username . ')',
-            ['class' => 'btn btn-link logout']
-        )
-        . Html::endForm()
-        . '</li>'
+    $items[] = ['label' => 'Sign out (' . Yii::$app->user->identity->username . ')',
+        'url' => ['/user/security/logout'],
+        'linkOptions' => ['data-method' => 'post']];
+    $items[] = ['label' => 'Register', 'url' => ['/user/registration/register'], 'visible' => Yii::$app->user->isGuest]
     ;
 }
 ?>
