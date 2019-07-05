@@ -29,5 +29,12 @@ phpunit.phar
 tests/_output/*
 tests/_support/_generated
 
-#vagrant folder
+# vagrant folder
 /.vagrant
+
+# ignore yii assets
+web/assets
+
+# ignore yii config files
+config/db.php
+config/mailer.php
