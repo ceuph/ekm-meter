@@ -21,6 +21,7 @@ if (Yii::$app->user->isGuest) {
     $items[] = ['label' => 'Meters', 'url' => ['/meter/index']];
     $items[] = ['label' => 'Groups', 'url' => ['/groups/index']];
     $items[] = ['label' => 'Reports', 'url' => ['/report/index']];
+    $items[] = ['label' => 'Account', 'url' => ['/user/settings/account']];
     $items[] = ['label' => 'Sign out (' . Yii::$app->user->identity->username . ')',
         'url' => ['/user/security/logout'],
         'linkOptions' => ['data-method' => 'post']];
