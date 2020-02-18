@@ -201,11 +201,7 @@ class EkmSummaryApi extends Component
 
     public function getData()
     {
-        $ch = curl_init();
-        curl_setopt($ch,    CURLOPT_URL, $this->getUrl());
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $content = curl_exec($ch);
-
+        $content = file_get_contents($this->getUrl());
         if (false === $content) {
             throw new \Exception(curl_error($ch), curl_errno($ch));
         }
