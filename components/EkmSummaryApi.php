@@ -12,7 +12,7 @@ class EkmSummaryApi extends Component
     const PARAM_REPORT = 'report';
     const PARAM_FORMAT = 'format';
     const PARAM_LIMIT = 'limit';
-    const PARAM_OFFSET = 'offfset';
+    const PARAM_OFFSET = 'offset';
     const PARAM_TIMEZONE = 'timezone';
     const PARAM_START_DATE = 'start_date';
     const PARAM_END_DATE = 'end_date';
